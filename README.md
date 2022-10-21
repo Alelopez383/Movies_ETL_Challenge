@@ -1,6 +1,17 @@
 # Movies_ETL_Challenge
 The streaming company Amazing Prime needs to gather data from both Wikipedia and Kaggle, for a hackathon. To do this, we will follow the ETL process: extract the Wikipedia and Kaggle data from their respective files, transform the datasets by cleaning them up and joining them together, and load the cleaned dataset into a SQL database.
 
+# 1. Write an ETL Function to Read Three Data Files
+Using Python, Pandas, the ETL process, and code refactoring, write a function that reads in the three data files and creates three separate DataFrames.
+
+# 2. Extract and Transform the Wikipedia Data
+Extract and transform the Wikipedia data so you can merge it with the Kaggle metadata. While extracting the IMDb IDs using a regular expression string and dropping duplicates, use a try-except block to catch errors.
+
+# 3. Extract and Transform the Kaggle Data
+Extract and transform the Kaggle metadata and MovieLens rating data, then convert the transformed data into separate DataFrames. Then, you’ll merge the Kaggle metadata DataFrame with the Wikipedia movies DataFrame to create the movies_df DataFrame. Finally, you’ll merge the MovieLens rating data DataFrame with the movies_df DataFrame to create the movies_with_ratings_df.
+
+# 4. Create the Movie Database
+Add the movies_df DataFrame and MovieLens rating CSV data to a SQL database.
 
 # Conecting Movies_data and ratings to SQL
 
