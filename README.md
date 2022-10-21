@@ -196,6 +196,7 @@ def etl():
 ### Wiki_Movies Clean DataFrame
 
 ![image](https://user-images.githubusercontent.com/43974872/197296591-2ed90218-ebc2-43a7-9a0e-db506dec49e0.png)
+![image](https://user-images.githubusercontent.com/43974872/197297579-cc939ed4-7497-4517-aa18-5f33dec1b82e.png)
 
 ### List of columns
 
