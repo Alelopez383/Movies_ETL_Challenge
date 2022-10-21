@@ -26,7 +26,7 @@ def etl():
 
 ### Ratings DataFrame
 
-![image](https://user-images.githubusercontent.com/43974872/197236562-0d80eb83-447f-4cb3-9935-ee0540cdec13.png)
+![image](https://user-images.githubusercontent.com/43974872/197238093-85759d41-77ff-40c5-9794-47c45edfdfdd.png)
 
 
 
