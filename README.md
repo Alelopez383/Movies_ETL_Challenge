@@ -204,7 +204,105 @@ def etl():
 
 
 # 3. Extract and Transform the Kaggle Data
-Extract and transform the Kaggle metadata and MovieLens rating data, then convert the transformed data into separate DataFrames. Then, you’ll merge the Kaggle metadata DataFrame with the Wikipedia movies DataFrame to create the movies_df DataFrame. Finally, you’ll merge the MovieLens rating data DataFrame with the movies_df DataFrame to create the movies_with_ratings_df.
+Extract and transform the Kaggle metadata and MovieLens rating data, then convert the transformed data into separate DataFrames. Then, merge the Kaggle metadata DataFrame with the Wikipedia movies DataFrame to create the movies_df DataFrame. Finally,merge the MovieLens rating data DataFrame with the movies_df DataFrame to create the movies_with_ratings_df.
+
+The function used in this part of the analysis, use the two functions we already create in Delivery 1 and Delivery 2, so I´m quoting the part that is new.
+On and matter, When dataframes were created, I also checked the values of each column of each dataframe to keep it for the next step, importing the datasets to SQL. 
+```
+
+###############################################################################
+#------------------Function from Deliverable 1--------------------------------#
+#------------------Function from Deliverable 2--------------------------------#
+###############################################################################
+
+     # 2. Clean the Kaggle metadata.
+    kaggle_metadata.dtypes
+    kaggle_metadata['adult'].value_counts()
+    kaggle_metadata[~kaggle_metadata['adult'].isin(['True','False'])]
+    kaggle_metadata = kaggle_metadata[kaggle_metadata['adult'] == 'False'].drop('adult',axis='columns')
+    kaggle_metadata['video'].value_counts()
+    kaggle_metadata['video'] == 'True'
+    kaggle_metadata['video'] = kaggle_metadata['video'] == 'True'
+    kaggle_metadata['budget'] = kaggle_metadata['budget'].astype(int)
+    kaggle_metadata['id'] = pd.to_numeric(kaggle_metadata['id'], errors='raise')
+    kaggle_metadata['popularity'] = pd.to_numeric(kaggle_metadata['popularity'], errors='raise')
+    kaggle_metadata['release_date'] = pd.to_datetime(kaggle_metadata['release_date'])
+    
+    # 3. Merged the two DataFrames into the movies DataFrame.
+    movies_df = pd.merge(wiki_movies_df, kaggle_metadata, on='imdb_id', suffixes=['_wiki','_kaggle'])
+    
+    # 4. Drop unnecessary columns from the merged DataFrame.
+    movies_df.drop(columns=['title_wiki','release_date_wiki','Language','Production company(s)'], inplace=True)
+    
+    # 5. Add in the function to fill in the missing Kaggle data.
+    def fill_missing_kaggle_data(df, kaggle_column, wiki_column):
+        df[kaggle_column] = df.apply(lambda row: row[wiki_column] if row[kaggle_column] == 0 else row[kaggle_column]
+             , axis=1)
+        df.drop(columns=wiki_column, inplace=True)
+        
+    # 6. Call the function in Step 5 with the DataFrame and columns as the arguments.
+    fill_missing_kaggle_data(movies_df, 'runtime', 'running_time')
+    fill_missing_kaggle_data(movies_df, 'budget_kaggle', 'budget_wiki')
+    fill_missing_kaggle_data(movies_df, 'revenue', 'box_office')
+    
+    # 7. Filter the movies DataFrame for specific columns.
+    # one way to reorder the columns
+    movies_df = movies_df.loc[:, ['imdb_id','id','title_kaggle','original_title','tagline','belongs_to_collection','url','imdb_link',
+                           'runtime','budget_kaggle','revenue','release_date_kaggle','popularity','vote_average','vote_count',
+                           'genres','original_language','overview','spoken_languages','Country',
+                           'production_companies','production_countries','Distributor',
+                           'Producer(s)','Director','Starring','Cinematography','Editor(s)','Writer(s)','Composer(s)','Based on'
+                          ]]
+
+    # 8. Rename the columns in the movies DataFrame.
+    movies_df.rename({'id':'kaggle_id',
+                      'title_kaggle':'title',
+                      'url':'wikipedia_url',
+                      'budget_kaggle':'budget',
+                      'release_date_kaggle':'release_date',
+                      'Country':'country',
+                      'Distributor':'distributor',
+                      'Producer(s)':'producers',
+                      'Director':'director',
+                      'Starring':'starring',
+                      'Cinematography':'cinematography',
+                      'Editor(s)':'editors',
+                      'Writer(s)':'writers',
+                      'Composer(s)':'composers',
+                      'Based on':'based_on'
+                     }, axis='columns', inplace=True)
+    
+    # 9. Transform and merge the ratings DataFrame.
+    rating_counts = ratings.groupby(['movieId','rating'], as_index=False).count()
+    rating_counts = ratings.groupby(['movieId','rating'], as_index=False).count() \
+                    .rename({'userId':'count'}, axis=1)
+    rating_counts = ratings.groupby(['movieId','rating'], as_index=False).count() \
+                    .rename({'userId':'count'}, axis=1) \
+                    .pivot(index='movieId',columns='rating', values='count')
+    rating_counts.columns = ['rating_' + str(col) for col in rating_counts.columns]
+    movies_with_ratings_df = pd.merge(movies_df, rating_counts, left_on='kaggle_id', right_index=True, how='left')
+    movies_with_ratings_df[rating_counts.columns] = movies_with_ratings_df[rating_counts.columns].fillna(0)
+
+    return wiki_movies_df, movies_with_ratings_df, movies_df
+```
+### Wiki_Movies DataFrame
+
+![image](https://user-images.githubusercontent.com/43974872/197305855-66760f52-9c9f-4e6b-939f-87ee320f9d6e.png)
+
+![image](https://user-images.githubusercontent.com/43974872/197306024-a5405c24-120e-4b23-9535-d7dfc9d7c526.png)
+
+### Movies_with_ratings DataFrame
+
+![image](https://user-images.githubusercontent.com/43974872/197306075-f5f75fc3-1e10-422e-97da-bd5af06174cf.png)
+
+![image](https://user-images.githubusercontent.com/43974872/197306124-3d430ca8-662e-432a-ad74-fc9a6f3de607.png)
+
+### Movies DataFrame
+
+![image](https://user-images.githubusercontent.com/43974872/197306151-a9b9dcc8-fc0c-470c-b625-0b63cd2b3316.png)
+
+![image](https://user-images.githubusercontent.com/43974872/197306167-ed4eb867-82d2-4aa4-bdbe-f56aac8fa7eb.png)
+
 
 # 4. Create the Movie Database
 Add the movies_df DataFrame and MovieLens rating CSV data to a SQL database.
