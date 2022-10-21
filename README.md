@@ -3,6 +3,32 @@ The streaming company Amazing Prime needs to gather data from both Wikipedia and
 
 # 1. Write an ETL Function to Read Three Data Files
 Using Python, Pandas, the ETL process, and code refactoring, write a function that reads in the three data files and creates three separate DataFrames.
+```
+def etl():
+
+    kaggle_metadata = pd.read_csv(f'{file_dir}/movies_metadata.csv', low_memory=False)
+    ratings = pd.read_csv(f'{file_dir}/ratings.csv')
+    
+    with open(f'{file_dir}/wikipedia-movies.json', mode='r') as file:
+        wiki_movies_raw = json.load(file)
+        
+    wiki_movies_df = pd.DataFrame(wiki_movies_raw)
+    
+    return wiki_movies_df, kaggle_metadata, ratings
+ ```   
+### Wiki_movies DataFrame
+
+![image](https://user-images.githubusercontent.com/43974872/197236109-9cbf3fdd-10c7-4749-a1c0-5a12170e1ed7.png)
+
+### Kaggle_metadata DataFrame
+
+![image](https://user-images.githubusercontent.com/43974872/197236367-38c75873-8ab6-4b18-a223-5c70fd43c5c2.png)
+
+### Ratings DataFrame
+
+![image](https://user-images.githubusercontent.com/43974872/197236562-0d80eb83-447f-4cb3-9935-ee0540cdec13.png)
+
+
 
 # 2. Extract and Transform the Wikipedia Data
 Extract and transform the Wikipedia data so you can merge it with the Kaggle metadata. While extracting the IMDb IDs using a regular expression string and dropping duplicates, use a try-except block to catch errors.
