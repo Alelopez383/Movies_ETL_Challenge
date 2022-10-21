@@ -15,6 +15,17 @@ def etl():
     wiki_movies_df = pd.DataFrame(wiki_movies_raw)
     
     return wiki_movies_df, kaggle_metadata, ratings
+    
+file_dir = "C:/Users/alelo/Documents/BootCamp Tec/Module 8_ETL/Movies_ETL_Challenge"
+
+wiki_file = f'{file_dir}/wikipedia_movies.json'
+
+kaggle_file = f'{file_dir}/movies_metadata.csv'
+
+ratings_file = f'{file_dir}/ratings.csv'
+
+wiki_file, kaggle_file, ratings_file = etl()
+    
  ```   
 ### Wiki_movies DataFrame
 
