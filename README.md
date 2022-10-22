@@ -307,13 +307,43 @@ On and matter, When dataframes were created, I also checked the values of each c
 # 4. Create the Movie Database
 Add the movies_df DataFrame and MovieLens rating CSV data to a SQL database.
 
+```
+###############################################################################
+#------------------Function from Deliverable 1--------------------------------#
+#------------------Function from Deliverable 2--------------------------------#
+#------------------Function from Deliverable 3--------------------------------#
+###############################################################################
+ #10. Add the code to create the connection to the PostgreSQL
+    db_string = f"postgresql://postgres:{db_password}@127.0.0.1:5432/movie_data"
+    engine = create_engine(db_string)
+    movies_df.to_sql(name='movies', con=engine, if_exists='replace')
+    
+    rows_imported = 0
+    # get the start_time from time.time()
+    start_time = time.time()
+    for data in pd.read_csv(f'{file_dir}/ratings.csv', chunksize=1000000):
+        print(f'importing rows {rows_imported} to {rows_imported + len(data)}...', end='')
+        data.to_sql(name='ratings', con=engine, if_exists='append')
+        rows_imported += len(data)
+
+        # add elapsed time to final print out
+        print(f'Done. {time.time() - start_time} total seconds elapsed')
+```
+Because Ratings is a big database to import in one statement, it has to be divided into "chunks" of data. 
+
+### Importing rows
+
+![image](https://user-images.githubusercontent.com/43974872/197311340-18fb14e9-73ac-4927-9837-cd1effcbc106.png)
+
+
 # Conecting Movies_data and ratings to SQL
 
 
 ## Movies
 
-![image](https://user-images.githubusercontent.com/43974872/197107143-e00c87aa-92b0-4ea2-9b06-4efa95e9bbe2.png)
+![movies_query](https://user-images.githubusercontent.com/43974872/197311483-8148032b-0db9-421f-8535-7a9649b5a78f.png)
+
 
 ## Ratings
+![ratings_query](https://user-images.githubusercontent.com/43974872/197311492-f6713c70-a7fb-4d89-a6dc-154bcdbfcd0d.png)
 
-![image](https://user-images.githubusercontent.com/43974872/197106982-12b55286-fc7a-4e57-8f8f-3a019e56623b.png)
