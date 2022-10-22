@@ -341,8 +341,9 @@ Because Ratings is a big database to import in one statement, it has to be divid
 
 ## Movies
 
-![image](https://user-images.githubusercontent.com/43974872/197107143-e00c87aa-92b0-4ea2-9b06-4efa95e9bbe2.png)
+![movies_query](https://user-images.githubusercontent.com/43974872/197311483-8148032b-0db9-421f-8535-7a9649b5a78f.png)
+
 
 ## Ratings
+![ratings_query](https://user-images.githubusercontent.com/43974872/197311492-f6713c70-a7fb-4d89-a6dc-154bcdbfcd0d.png)
 
-![image](https://user-images.githubusercontent.com/43974872/197106982-12b55286-fc7a-4e57-8f8f-3a019e56623b.png)
